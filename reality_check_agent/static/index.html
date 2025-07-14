@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Reality Check Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 40px 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .analyze-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results {
+            display: none;
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e1e5e9;
+        }
+        
+        .results-content {
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .results-content h1, .results-content h2, .results-content h3 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+        }
+        
+        .results-content h2 {
+            border-bottom: 2px solid #e1e5e9;
+            padding-bottom: 5px;
+        }
+        
+        .results-content strong {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .results-content code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #e1e5e9;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .results-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .results-content li {
+            margin: 5px 0;
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .steps {
+            display: none;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e1e5e9;
+        }
+        
+        .step {
+            padding: 10px 0;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .step-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .examples {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e1e5e9;
+        }
+        
+        .examples h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .example-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .example-topic {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .example-topic:hover {
+            background: #764ba2;
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Reality Check Bot</h1>
+            <p>Validate emotionally charged topics with Reddit, web, and academic research</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="input-group">
+                <label for="topic">Enter a topic to research:</label>
+                <input 
+                    type="text" 
+                    id="topic" 
+                    placeholder="e.g., impostor syndrome in software engineering"
+                    autocomplete="off"
+                >
+            </div>
+            
+            <button class="analyze-btn" onclick="analyzeTopic()">
+                🚀 Analyze Topic
+            </button>
+        </div>
+        
+        <div class="steps" id="steps">
+            <div class="step" id="step-reddit">
+                <span class="step-icon">🔍</span>
+                <span>Searching Reddit discussions...</span>
+            </div>
+            <div class="step" id="step-web">
+                <span class="step-icon">🌐</span>
+                <span>Searching web sources...</span>
+            </div>
+            <div class="step" id="step-academic">
+                <span class="step-icon">📚</span>
+                <span>Searching academic research...</span>
+            </div>
+            <div class="step" id="step-synthesis">
+                <span class="step-icon">🧠</span>
+                <span>Synthesizing insights...</span>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Analyzing your topic... This may take 30-60 seconds</p>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="results-content" id="results-content"></div>
+        </div>
+        
+        <div class="examples">
+            <h3>💡 Example Topics:</h3>
+            <div class="example-topics">
+                <div class="example-topic" onclick="setTopic('impostor syndrome in software engineering')">
+                    Impostor syndrome in tech
+                </div>
+                <div class="example-topic" onclick="setTopic('remote work loneliness')">
+                    Remote work loneliness
+                </div>
+                <div class="example-topic" onclick="setTopic('burnout in healthcare workers')">
+                    Healthcare burnout
+                </div>
+                <div class="example-topic" onclick="setTopic('social media addiction')">
+                    Social media addiction
+                </div>
+                <div class="example-topic" onclick="setTopic('climate change anxiety')">
+                    Climate anxiety
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown parsing library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        function setTopic(topic) {
+            document.getElementById('topic').value = topic;
+        }
+        
+        function parseMarkdown(text) {
+            // Basic markdown parsing
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')              // Italic
+                .replace(/`(.*?)`/g, '<code>$1</code>')            // Inline code
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')           // H3
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')            // H2
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')             // H1
+                .replace(/^\- (.*$)/gm, '<li>$1</li>')            // List items
+                .replace(/\n\n/g, '</p><p>')                      // Paragraphs
+                .replace(/\n/g, '<br>')                           // Line breaks
+                // Wrap in paragraph tags
+                .replace(/^(.*)$/, '<p>$1</p>')
+                // Fix list items
+                .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+                // Clean up extra paragraph tags
+                .replace(/<p><\/p>/g, '')
+                .replace(/<p>(<h[1-6]>)/g, '$1')
+                .replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+        }
+        
+        function showStep(stepId) {
+            // Reset all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Activate current step
+            document.getElementById(stepId).classList.add('active');
+        }
+        
+        async function analyzeTopic() {
+            const topic = document.getElementById('topic').value.trim();
+            
+            if (!topic) {
+                alert('Please enter a topic to analyze');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('steps').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.querySelector('.analyze-btn').disabled = true;
+            
+            // Simulate step progression
+            const steps = ['step-reddit', 'step-web', 'step-academic', 'step-synthesis'];
+            let currentStep = 0;
+            
+            const stepInterval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    showStep(steps[currentStep]);
+                    currentStep++;
+                } else {
+                    clearInterval(stepInterval);
+                }
+            }, 2000);
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ topic: topic })
+                });
+                
+                const data = await response.json();
+                
+                clearInterval(stepInterval);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('steps').style.display = 'none';
+                
+                if (data.success) {
+                    // Parse markdown and display formatted content
+                    document.getElementById('results-content').innerHTML = parseMarkdown(data.analysis);
+                    document.getElementById('results').style.display = 'block';
+                } else {
+                    document.getElementById('results-content').innerHTML = 
+                        `<div class="error">Error: ${data.error || 'Unknown error occurred'}</div>`;
+                    document.getElementById('results').style.display = 'block';
+                }
+                
+            } catch (error) {
+                clearInterval(stepInterval);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('steps').style.display = 'none';
+                document.getElementById('results-content').innerHTML = 
+                    `<div class="error">Network error: ${error.message}</div>`;
+                document.getElementById('results').style.display = 'block';
+            }
+            
+            document.querySelector('.analyze-btn').disabled = false;
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('topic').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeTopic();
+            }
+        });
+    </script>
+</body>
+</html> 
