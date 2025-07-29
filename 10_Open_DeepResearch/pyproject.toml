@@ -21,4 +21,6 @@ dependencies = [
     "pymupdf>=1.25.3",
     "xmltodict>=0.14.2",
     "jupyter>=1.1.1",
+    "exa_py"
+    
 ]
