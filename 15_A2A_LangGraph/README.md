@@ -5,9 +5,9 @@
 
 ## <h1 align="center" id="heading">Session 15: Build & Serve an A2A Endpoint for Our LangGraph Agent</h1>
 
-| 🤓 Pre-work | 📰 Session Sheet | ⏺️ Recording     | 🖼️ Slides        | 👨‍💻 Repo         | 📝 Homework      | 📁 Feedback       |
-|:-----------------|:-----------------|:-----------------|:-----------------|:-----------------|:-----------------|:-----------------|
-| [Session 15: Pre-Work](https://www.notion.so/Session-15-Agent2Agent-Protocol-Agent-Ops-247cd547af3d8066bc5be493bc0c7eda?source=copy_link#247cd547af3d81369191e4e6cd62f875)| [Session 15: Agent2Agent Protocol & Agent Ops](https://www.notion.so/Session-15-Agent2Agent-Protocol-Agent-Ops-247cd547af3d8066bc5be493bc0c7eda) | [Recording!](https://us02web.zoom.us/rec/share/lgZHp8jqB5D5ytsi1gKH-wwdoz6fX0yBlJFOz5tuoGa1TMU0x7e9rKkkH4a75uUx.RC9C31cDG5Bl4UR2) (mttc.$6G)| [Session 15 Slides](https://www.canva.com/design/DAGv5Xxl3Vw/CRpCrhpika6yPjcQHwB_MQ/edit?utm_content=DAGv5Xxl3Vw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) | You are here! | [Session 15 Assignment: A2A](https://forms.gle/RPC6sNh2WXE6984j9) | [AIE7 Feedback 8/12](https://forms.gle/AZT2usWxqzfa1JNc8)
+| 🤓 Pre-work                                                                                                                                                                | 📰 Session Sheet                                                                                                                                 | ⏺️ Recording                                                                                                                                 | 🖼️ Slides                                                                                                                                                                          | 👨‍💻 Repo       | 📝 Homework                                                       | 📁 Feedback                                               |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------ | :---------------------------------------------------------------- | :-------------------------------------------------------- |
+| [Session 15: Pre-Work](https://www.notion.so/Session-15-Agent2Agent-Protocol-Agent-Ops-247cd547af3d8066bc5be493bc0c7eda?source=copy_link#247cd547af3d81369191e4e6cd62f875) | [Session 15: Agent2Agent Protocol & Agent Ops](https://www.notion.so/Session-15-Agent2Agent-Protocol-Agent-Ops-247cd547af3d8066bc5be493bc0c7eda) | [Recording!](https://us02web.zoom.us/rec/share/lgZHp8jqB5D5ytsi1gKH-wwdoz6fX0yBlJFOz5tuoGa1TMU0x7e9rKkkH4a75uUx.RC9C31cDG5Bl4UR2) (mttc.$6G) | [Session 15 Slides](https://www.canva.com/design/DAGv5Xxl3Vw/CRpCrhpika6yPjcQHwB_MQ/edit?utm_content=DAGv5Xxl3Vw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton) | You are here! | [Session 15 Assignment: A2A](https://forms.gle/RPC6sNh2WXE6984j9) | [AIE7 Feedback 8/12](https://forms.gle/AZT2usWxqzfa1JNc8) |
 
 # A2A Protocol Implementation with LangGraph
 
@@ -31,7 +31,7 @@ graph TD
     C -->|"No"| E["🎯 Helpfulness Node<br/>(A2A Evaluation)"]
     D --> F["🔧 Execute Tools"]
     F --> G["📊 Tavily Search<br/>(Web Results)"]
-    F --> H["📚 ArXiv Search<br/>(Academic Papers)"]  
+    F --> H["📚 ArXiv Search<br/>(Academic Papers)"]
     F --> I["📄 RAG Retrieval<br/>(Document Search)"]
     G --> B
     H --> B
@@ -41,7 +41,7 @@ graph TD
     J -->|"No (N)"| L{"🔄 Loop Count<br/>< 10?"}
     L -->|"Yes"| B
     L -->|"No"| K
-    
+
     style A fill:#1e3a5f,stroke:#ffffff,stroke-width:3px,color:#ffffff
     style B fill:#4a148c,stroke:#ffffff,stroke-width:3px,color:#ffffff
     style C fill:#0d47a1,stroke:#ffffff,stroke-width:3px,color:#ffffff
@@ -81,15 +81,34 @@ uv run python app/test_client.py
 
 Build a LangGraph Graph to "use" your application.
 
-Do this by creating a Simple Agent that can make API calls to the 🤖Agent Node above through the A2A protocol. 
+Do this by creating a Simple Agent that can make API calls to the 🤖Agent Node above through the A2A protocol.
 
 ### ❓ Question #1:
 
 What are the core components of an `AgentCard`?
 
+#### Answer
+
+- Basic info like `name`, `description`, `url`, and `version`
+- Input/output modes that define what content types the agent can handle
+- `capabilities` that specify features like streaming and push notifications
+- `skills` a list of what the agent can actually do, with each skill having an ID, name, description, tags, and examples
+
+The skills section seems really important because it tells other agents exactly what this agent is good at and how to use it.
+
 ### ❓ Question #2:
 
 Why is A2A (and other such protocols) important in your own words?
+
+#### Answer
+
+I think A2A protocols are important because they solve a real problem we're starting to see with AI systems. Right now, most AI agents are isolated meaning they can't easily work together or share capabilities.
+
+With A2A, we can have specialized agents that are really good at specific things (like one that's great at searching papers, another that's good at analyzing documents) and they can actually collaborate.
+
+The protocol also includes quality checks (like the helpfulness evaluation we implemented) which I think is crucial for production systems. We want to make sure agents are giving good responses before they pass information to other agents or users.
+
+Plus, from a practical standpoint, it makes systems more maintainable. Instead of trying to build one massive agent that does everything, we can build smaller, focused agents that are easier to debug and improve.
 
 ### 🚧 Advanced Build:
 
@@ -98,11 +117,12 @@ Why is A2A (and other such protocols) important in your own words?
 
 Use a different Agent Framework to **test** your application.
 
-Do this by creating a Simple Agent that acts as different personas with different goals and have that Agent use your Agent through A2A. 
+Do this by creating a Simple Agent that acts as different personas with different goals and have that Agent use your Agent through A2A.
 
 Example:
 
 "You are an expert in Machine Learning, and you want to learn about what makes Kimi K2 so incredible. You are not satisfied with surface level answers, and you wish to have sources you can read to verify information."
+
 </details>
 
 ## 📁 Implementation Details
@@ -112,6 +132,7 @@ For detailed technical documentation, file structure, and implementation guides,
 **➡️ [app/README.md](./app/README.md)**
 
 This contains:
+
 - Complete file structure breakdown
 - Technical implementation details
 - Tool configuration guides
@@ -133,27 +154,25 @@ This contains:
 ## Main Homework Assignment
 
 Follow these steps to prepare and submit your homework assignment:
+
 1. Create a branch of your `AIE7` repo to track your changes. Example command: `git checkout -b s15-assignment`
 2. Complete the activity above
 3. Answer the questions above _in-line in this README.md file_
 4. Record a Loom video reviewing the changes you made for this assignment and your comparison of the flows (Breakout Room Part #2 - Task 3).
 5. Commit, and push your changes to your `origin` repository. _NOTE: Do not merge it into your main branch._
 6. Make sure to include all of the following on your Homework Submission Form:
-    + The GitHub URL to the `15_A2A_LANGGRAPH` folder _on your assignment branch (not main)_
-    + The URL to your Loom Video
-    + Your Three lessons learned/not yet learned
-    + The URLs to any social media posts (LinkedIn, X, Discord, etc.) ⬅️ _easy Extra Credit points!_
+   - The GitHub URL to the `15_A2A_LANGGRAPH` folder _on your assignment branch (not main)_
+   - The URL to your Loom Video
+   - Your Three lessons learned/not yet learned
+   - The URLs to any social media posts (LinkedIn, X, Discord, etc.) ⬅️ _easy Extra Credit points!_
 
 ### OPTIONAL: Advanced Build Assignment _(Can be done in lieu of the Main Homework Assignnment)_
 
 Follow these steps to prepare and submit your homework assignment:
+
 1. Create a branch of your `AIE7` repo to track your changes. Example command: `git checkout -b s015-assignment`
 2. Complete the requirements for the Advanced Build
 3. Record a Loom video reviewing the agent you built and demostrating in action
 4. Commit, and push your changes to your `origin` repository. _NOTE: Do not merge it into your main branch._
-5. Make sure to include all of the following on your Homework Submission Form:
-    + The GitHub URL to the `15_A2A_LANGGRAPH` folder _on your assignment branch (not main)_
-    + The URL to your Loom Video
-    + Your Three lessons learned/not yet learned
-    + The URLs to any social media posts (LinkedIn, X, Discord, etc.) ⬅️ _easy Extra Credit points!_
-=======
+5. Make sure to include all of the following on your Homework Submission Form: + The GitHub URL to the `15_A2A_LANGGRAPH` folder _on your assignment branch (not main)_ + The URL to your Loom Video + Your Three lessons learned/not yet learned + The URLs to any social media posts (LinkedIn, X, Discord, etc.) ⬅️ _easy Extra Credit points!_
+   =======
